@@ -51,7 +51,7 @@ app.post("/campgrounds", async (req, res) => {
 });
 // CREATE 라우트가 :id 라우트보다 밑에 있으면 new경로를 id처리하기 떄문에 위에 있어야함
 
-// campgrounds:id
+// READ campgrounds:id
 app.get("/campgrounds/:id", async (req, res) => {
   const campground = await Campground.findById(req.params.id);
   res.render("campgrounds/show", { campground });
@@ -69,6 +69,13 @@ app.put("/campgrounds/:id", async (req, res) => {
     ...req.body.campground,
   });
   res.redirect(`/campgrounds/${campground._id}`);
+});
+
+// DELETE
+app.delete("/campgrounds/:id", async (req, res) => {
+  const { id } = req.params;
+  await Campground.findByIdAndDelete(id);
+  res.redirect("/campgrounds");
 });
 
 app.listen(3000, () => {
