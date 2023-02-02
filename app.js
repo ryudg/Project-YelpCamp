@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const catchAsync = require("./utils/catchAsync");
+const ExpressError = require("./utils/ExpressError");
 const Campground = require("./models/campground");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
@@ -62,6 +63,11 @@ app.get("/campgrounds/new", (req, res) => {
 app.post(
   "/campgrounds",
   catchAsync(async (req, res, next) => {
+    // 만약 req.body.campground가 없다면
+    // 비동기 함수이므로 Express가 오류를 발생시키면 catchAsync가 해당 오류를 처리하고 아래에 있는 next로 넘긴다
+    // 어디에든 오류를 발생시킬 수 있는 기초설정
+    // if (!req.body.campground)
+    //   throw new ExpressError("Invalid Campground Data", 400);
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
@@ -109,9 +115,18 @@ app.delete(
   })
 );
 
+// 404 Error 알수 없는 url 요청할 경우 가장 쉽게 처리하는 방법은 마지막에 app.all("*",(req,res,next))
+// 상단의 모든 코드에 요청이 닿지 않는 경우에만 실행됨
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
+  // new ExpressError를 next로 전달하므로 Error handler가 실핼되면 ExpressError가 그 오류가 됨
+});
+
 // Default Error handler
 app.use((err, req, res, next) => {
-  res.send("Oh no, ERROR!!!!!!");
+  // app.all에서 불러올 상태 코드와 메세지를 가져오기
+  const { message = "Something went wrong", statusCode = 500 } = err; // statusCode default value = 500, message default value = "Something went wrong"
+  res.status(statusCode).send(message);
 });
 
 app.listen(3000, () => {
