@@ -46,10 +46,15 @@ app.get("/campgrounds/new", (req, res) => {
   res.render("campgrounds/new");
 });
 // CREATE POST
-app.post("/campgrounds", async (req, res) => {
-  const campground = new Campground(req.body.campground);
-  await campground.save();
-  res.redirect(`/campgrounds/${campground._id}`);
+app.post("/campgrounds", async (req, res, next) => {
+  try {
+    const campground = new Campground(req.body.campground);
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+  } catch (e) {
+    // error가 있다면 해당 오류로 next를 호출하고 밑의 기본 오류 핸들러를 실행시켜 오류 메시지가 나온다
+    next(e);
+  }
 });
 // CREATE 라우트가 :id 라우트보다 밑에 있으면 new경로를 id처리하기 떄문에 위에 있어야함
 
@@ -78,6 +83,11 @@ app.delete("/campgrounds/:id", async (req, res) => {
   const { id } = req.params;
   await Campground.findByIdAndDelete(id);
   res.redirect("/campgrounds");
+});
+
+// Default Error handler
+app.use((err, req, res, next) => {
+  res.send("Oh no, ERROR!!!!!!");
 });
 
 app.listen(3000, () => {
