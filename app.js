@@ -125,8 +125,9 @@ app.all("*", (req, res, next) => {
 // Default Error handler
 app.use((err, req, res, next) => {
   // app.all에서 불러올 상태 코드와 메세지를 가져오기
-  const { message = "Something went wrong", statusCode = 500 } = err; // statusCode default value = 500, message default value = "Something went wrong"
-  res.status(statusCode).send(message);
+  const { statusCode = 500 } = err; // statusCode default value = 500, message default value = "Something went wrong"
+  if (!err.message) err.message = "Oh No, ERROR!!!!!";
+  res.status(statusCode).render("error", { err });
 });
 
 app.listen(3000, () => {
