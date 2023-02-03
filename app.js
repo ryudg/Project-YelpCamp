@@ -1,11 +1,12 @@
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate");
+const Joi = require("joi");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 const Campground = require("./models/campground");
-const methodOverride = require("method-override");
-const ejsMate = require("ejs-mate");
 
 mongoose.set("strictQuery", true);
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
@@ -68,6 +69,23 @@ app.post(
     // 어디에든 오류를 발생시킬 수 있는 기초설정
     // if (!req.body.campground)
     //   throw new ExpressError("Invalid Campground Data", 400);
+
+    // 기본 스키마 정의, Mongoose 스키마가 아니고 Mongoose로 저장하기도 전에 데이터 유효성 검사를 함
+    const campgroundSchema = Joi.object({
+      // campground = Key, input의 name 값이 campground 반드시 키 아래에 값을이 있어야함
+      campground: Joi.object({
+        title: Joi.string().required(),
+        price: Joi.number().required().min(0),
+        image: Joi.string().required(),
+        location: Joi.string().required(),
+        description: Joi.string().required(),
+      }).required(),
+    }); // 스키마 정의 후 스키마에 데이터 전달하기
+    const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+      const msg = error.details.map((el) => el.message).join(",");
+      throw new ExpressError(msg, 400);
+    }
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
