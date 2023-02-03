@@ -3,7 +3,8 @@ const path = require("path");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const Joi = require("joi");
+// const Joi = require("joi");
+const { campgroundSchema } = require("./schema");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 const Campground = require("./models/campground");
@@ -22,6 +23,31 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+
+// Joi Middlewawr 정의
+const validateCampground = (req, res, next) => {
+  // 기본 스키마 정의, Mongoose 스키마가 아니고 Mongoose로 저장하기도 전에 데이터 유효성 검사를 함
+  // const campgroundSchema = Joi.object({
+  //   // campground = Key, input의 name 값이 campground 반드시 키 아래에 값을이 있어야함
+  //   campground: Joi.object({
+  //     title: Joi.string().required(),
+  //     price: Joi.number().required().min(0),
+  //     image: Joi.string().required(),
+  //     location: Joi.string().required(),
+  //     description: Joi.string().required(),
+  //   }).required(),
+  // }); // 스키마 정의 후 스키마에 데이터 전달하기
+
+  // schemas.js로 분리
+
+  const { error } = campgroundSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
 
 // home
 app.get("/", (req, res) => {
@@ -59,10 +85,12 @@ app.get("/campgrounds/new", (req, res) => {
 //     next(e);
 //   }
 // });
+
 // CREATE 라우트가 :id 라우트보다 밑에 있으면 new경로를 id처리하기 떄문에 위에 있어야함
 // 더이상 try...catch를 할 필요가 없이 catchAsync함수를 사용
 app.post(
   "/campgrounds",
+  validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가
   catchAsync(async (req, res, next) => {
     // 만약 req.body.campground가 없다면
     // 비동기 함수이므로 Express가 오류를 발생시키면 catchAsync가 해당 오류를 처리하고 아래에 있는 next로 넘긴다
@@ -70,22 +98,6 @@ app.post(
     // if (!req.body.campground)
     //   throw new ExpressError("Invalid Campground Data", 400);
 
-    // 기본 스키마 정의, Mongoose 스키마가 아니고 Mongoose로 저장하기도 전에 데이터 유효성 검사를 함
-    const campgroundSchema = Joi.object({
-      // campground = Key, input의 name 값이 campground 반드시 키 아래에 값을이 있어야함
-      campground: Joi.object({
-        title: Joi.string().required(),
-        price: Joi.number().required().min(0),
-        image: Joi.string().required(),
-        location: Joi.string().required(),
-        description: Joi.string().required(),
-      }).required(),
-    }); // 스키마 정의 후 스키마에 데이터 전달하기
-    const { error } = campgroundSchema.validate(req.body);
-    if (error) {
-      const msg = error.details.map((el) => el.message).join(",");
-      throw new ExpressError(msg, 400);
-    }
     const campground = new Campground(req.body.campground);
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
@@ -114,6 +126,7 @@ app.get(
 // UPDATE PUT
 app.put(
   "/campgrounds/:id",
+  validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {
