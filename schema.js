@@ -11,7 +11,7 @@ module.exports.campgroundSchema = Joi.object({
 }); // 스키마 정의 후 스키마에 데이터 전달하기
 
 module.exports.reviewSchema = Joi.object({
-  revie: Joi.object({
+  review: Joi.object({
     rating: Joi.number().required().min(1).max(5),
     body: Joi.string().required(),
   }).required(),
