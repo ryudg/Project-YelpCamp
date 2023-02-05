@@ -159,7 +159,7 @@ app.delete(
   })
 );
 
-// Review
+// Creatae Review
 app.post(
   "/campgrounds/:id/reviews",
   validateReview,
@@ -170,6 +170,17 @@ app.post(
     await review.save();
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
+  })
+);
+// Delete Review
+app.delete(
+  "/campgrounds/:id/reviews/:reviewId",
+  catchAsync(async (req, res) => {
+    // $pull - 배열에 있는 모든 인스턴스 중에 특정 조건에 만족하는 값 지우기
+    const { id, reviewId } = req.params;
+    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`);
   })
 );
 
