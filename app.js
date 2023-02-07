@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
+const session = require("express-session");
 // const Joi = require("joi");
 // const { campgroundSchema, reviewSchema } = require("./schema.js");
 // const catchAsync = require("./utils/catchAsync");
@@ -29,6 +30,17 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+const sessionConfig = {
+  secret: "secretkey",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7일 후
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+app.use(session(sessionConfig));
 
 // 사용하고자하는 라우터 지정
 app.use("/campgrounds", campgrounds);
