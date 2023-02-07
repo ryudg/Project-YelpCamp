@@ -5,6 +5,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 const session = require("express-session");
+const flash = require("connect-flash");
 // const Joi = require("joi");
 // const { campgroundSchema, reviewSchema } = require("./schema.js");
 // const catchAsync = require("./utils/catchAsync");
@@ -41,6 +42,13 @@ const sessionConfig = {
   },
 };
 app.use(session(sessionConfig));
+app.use(flash()); // req.flash에 키-값 쌍을 전달해 플래시 생성
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 // 사용하고자하는 라우터 지정
 app.use("/campgrounds", campgrounds);
