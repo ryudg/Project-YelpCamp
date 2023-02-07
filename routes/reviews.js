@@ -32,6 +32,7 @@ router.post(
     // 그러면 app.js의 매개변수와 함께 review.js파일의 매개변수가 병합됨
     await review.save();
     await campground.save();
+    req.flash("success", "Created New Review");
     res.redirect(`/campgrounds/${campground._id}`);
   })
 );
@@ -43,6 +44,7 @@ router.delete(
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash("success", "Successfully Deleted Review");
     res.redirect(`/campgrounds/${id}`);
   })
 );
