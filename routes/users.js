@@ -47,10 +47,13 @@ router.post(
     // 그래서 passport의 req.login을 사용함
     failureFlash: true,
     failureRedirect: "/login",
+    keepSessionInfo: true,
   }),
   (req, res) => {
     req.flash("success", "Welcome Back!!!");
-    res.redirect("/campgrounds");
+    const redirectUrl = req.session.returnTo || "/campgrounds";
+    delete req.session.returnTo; // 해당 변수를 계속 사용하지 않으므로 삭제
+    res.redirect(redirectUrl);
   }
 );
 
