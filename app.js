@@ -51,7 +51,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // 영구 로그인 세션, session()은 passport.session()전에 사용해야함
 passport.use(new LocalStarategy(User.authenticate())); // passport가 LocalStarategy를 사용, LocalStarategy에 대해 인증 메서드는 사용자 모델에 위치하게됨(authenticate)
 passport.serializeUser(User.serializeUser()); // passport에게 사용자를 어떻게 직렬화 하는지 알려줌, 직렬화는 어떻게 데이터를 얻고 세선세어 사용자를 저장하는지를 참조함
-passport.deserializeUser(User.deserializeUser()); //
+passport.deserializeUser(User.deserializeUser()); // 즉, 세선에 정보를 어떻게 저장하고 가져오는지를 결정하는 메서드이다.
 
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");

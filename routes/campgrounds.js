@@ -6,6 +6,7 @@ const catchAsync = require("../utils/catchAsync");
 const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const { campgroundSchema } = require("../schema.js");
+const { isLoggedIn } = require("../middleware");
 
 // Joi Middlewawr 정의
 const validateCampground = (req, res, next) => {
@@ -39,7 +40,7 @@ router.get("/", async (req, res) => {
 });
 
 // CREATE
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("campgrounds/new");
 });
 // CREATE POST
@@ -58,6 +59,7 @@ router.get("/new", (req, res) => {
 // 더이상 try...catch를 할 필요가 없이 catchAsync함수를 사용
 router.post(
   "/",
+  isLoggedIn,
   validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가
   catchAsync(async (req, res, next) => {
     // 만약 req.body.campground가 없다면
@@ -93,6 +95,7 @@ router.get(
 // UPDATE
 router.get(
   "/:id/edit",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     if (!campground) {
@@ -105,6 +108,7 @@ router.get(
 // UPDATE PUT
 router.put(
   "/:id",
+  isLoggedIn,
   validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가
   catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -119,6 +123,7 @@ router.put(
 // DELETE
 router.delete(
   "/:id",
+  isLoggedIn,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
