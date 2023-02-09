@@ -99,10 +99,18 @@ router.get(
   "/:id/edit",
   isLoggedIn,
   catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    // 찾은 캠핑장이 있는지 확인 후에
     if (!campground) {
       req.flash("error", "Cannot find that Campground");
       return res.redirect("/campgrounds");
+    }
+    // 캠핑장을 찾았다면 해당 캠핑장의 저자와 현재 로그인한 유저가 일치하는지 확인
+    if (!campground.author.equals(req.user._id)) {
+      // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
+      req.flash("error", "You do not have permission to do that");
+      return res.redirect(`/campgrounds/${id}`);
     }
     res.render("campgrounds/edit", { campground });
   })
@@ -114,7 +122,15 @@ router.put(
   validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, {
+    const campground = await Campground.findById(id);
+    if (!campground.author.equals(req.user._id)) {
+      // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
+      req.flash("error", "You do not have permission to do that");
+      return res.redirect(`/campgrounds/${id}`);
+    }
+    // findByIdAndUpdate를 두 단계로 나눠서 찾은 후에 업데이트할 수 있는지 확인하기.
+    // 즉 코드가 캠핑장을 생성한 author을 찾고 현재 로그인한 사용자와 일치하면 요청 보내기
+    const cam = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
     req.flash("success", "Successfully Updated Campground");
@@ -128,6 +144,12 @@ router.delete(
   isLoggedIn,
   catchAsync(async (req, res) => {
     const { id } = req.params;
+    const campground = await Campground.findById(id);
+    if (!campground.author.equals(req.user._id)) {
+      // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
+      req.flash("error", "You do not have permission to do that");
+      return res.redirect(`/campgrounds/${id}`);
+    }
     await Campground.findByIdAndDelete(id);
     req.flash("success", "Successfully Deleted Campground");
     res.redirect("/campgrounds");
