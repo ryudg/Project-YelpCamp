@@ -1,4 +1,5 @@
 const express = require("express");
+const passport = require("passport");
 const router = express.Router();
 const User = require("../models/user");
 const catchAsync = require("../utils/catchAsync");
@@ -22,6 +23,24 @@ router.post(
       res.redirect("register");
     }
   })
+);
+
+router.get("/login", (req, res) => {
+  res.render("users/login");
+});
+// 로그인 전략, local(facebook,google 여러개 설정 가능)
+// passport.authenticate 두번째 인자의 객체에 지정할 수 있는 옵션
+// failureFlash(플래시 메시지 띄우기), failureRedirect(login 실패시 리다이렉트)
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    failureFlash: true,
+    failureRedirect: "/login",
+  }),
+  (req, res) => {
+    req.flash("success", "Welcome Back!!!");
+    res.redirect("/campgrounds");
+  }
 );
 
 module.exports = router;
