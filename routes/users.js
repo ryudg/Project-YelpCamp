@@ -11,13 +11,19 @@ router.get("/register", (req, res) => {
 // 사용자 모델 인스턴스 생성
 router.post(
   "/register",
-  catchAsync(async (req, res) => {
+  catchAsync(async (req, res, next) => {
     try {
       const { email, username, password } = req.body;
       const user = new User({ email, username });
       const registerUser = await User.register(user, password);
-      req.flash("success", "Welcome to Yelp Camp");
-      res.redirect("/campgrounds");
+      // passport에서 로그인 세션을 위해 지원하는 것으로  authenticate는 req.login을 자동 호출함
+      // 사용자가 계정을 등록하거나 가입할 때 사용되는 것으로 새로운 사용자가 자동으로 로그인 상태를 유지하도록 함.
+      // 이 함수는 콜백이 필요하므로 기다릴수가 없다. 따라서 err을 입력해 오류 매개변수인 콜백을 만듦
+      req.login(registerUser, (err) => {
+        if (err) return next(err);
+        req.flash("success", "Welcome to Yelp Camp");
+        res.redirect("/campgrounds");
+      });
     } catch (e) {
       req.flash("error", e.message);
       res.redirect("register");
