@@ -16,8 +16,9 @@ const LocalStarategy = require("passport-local");
 const User = require("./models/user");
 
 // 라우터 불러오기
-const campgrounds = require("./routes/campgrounds");
-const reviews = require("./routes/reviews");
+const userRoutes = require("./routes/users");
+const campgroundsRoutes = require("./routes/campgrounds");
+const reviewsRoutes = require("./routes/reviews");
 
 mongoose.set("strictQuery", true);
 mongoose.connect("mongodb://localhost:27017/yelp-camp");
@@ -58,9 +59,30 @@ app.use((req, res, next) => {
   next();
 });
 
+// 회원가입(가짜 데이터 넣기)
+// app.get("/fakeUser", async (req, res) => {
+//   const user = new User({ email: "son@gmail.com", username: "Son" });
+//   // 암호를 전달하지 않음, register메서드를 사용(passport-local-mongoose 플러그인의 helper로 제공됨)
+//   // 주어진 암호로 새로운 사용자 인스턴스를 등록, 사용자 이름의 중복 여부 확인하는 메서드
+//   // User.register(user,password)는 전체 사용자 모델 인스턴스와 암호를 취하고 암호를 해시하고 저장함
+//   const newUser = await User.register(user, "goals");
+//   res.send(newUser);
+// });
+
+// const newUser = await User.register(user, "goals");의 결과
+// {
+// "email": "son@gmail.com",
+// "_id": "63e4dc7cf7e0e43f70f66460",
+// "username": "Son",
+// "salt": "bef89f5ae2eb93b542e0848a8042e829678e9cb3ec7e29d15fe9a3b3fb3cd7dc",
+// "hash": "0b4c43ad75dbd2a8493bfd5ca66a7c4a0d47918e8ff052e16911dddd7fd0b36e0.......",
+// "__v": 0
+// }
+
 // 사용하고자하는 라우터 지정
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+app.use("/", userRoutes);
+app.use("/campgrounds", campgroundsRoutes);
+app.use("/campgrounds/:id/reviews", reviewsRoutes);
 
 // home
 app.get("/", (req, res) => {
