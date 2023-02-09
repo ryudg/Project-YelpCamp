@@ -3,35 +3,10 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require("../utils/catchAsync");
-const ExpressError = require("../utils/ExpressError");
+// const ExpressError = require("../utils/ExpressError");
+// const { campgroundSchema } = require("../schema.js");
 const Campground = require("../models/campground");
-const { campgroundSchema } = require("../schema.js");
-const { isLoggedIn } = require("../middleware");
-
-// Joi Middlewawr 정의
-const validateCampground = (req, res, next) => {
-  // 기본 스키마 정의, Mongoose 스키마가 아니고 Mongoose로 저장하기도 전에 데이터 유효성 검사를 함
-  // const campgroundSchema = Joi.object({
-  //   // campground = Key, input의 name 값이 campground 반드시 키 아래에 값을이 있어야함
-  //   campground: Joi.object({
-  //     title: Joi.string().required(),
-  //     price: Joi.number().required().min(0),
-  //     image: Joi.string().required(),
-  //     location: Joi.string().required(),
-  //     description: Joi.string().required(),
-  //   }).required(),
-  // }); // 스키마 정의 후 스키마에 데이터 전달하기
-
-  // schemas.js로 분리
-
-  const { error } = campgroundSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
+const { isLoggedIn, validateCampground, isAuthor } = require("../middleware");
 
 // campgrounds
 router.get("/", async (req, res) => {
@@ -98,6 +73,7 @@ router.get(
 router.get(
   "/:id/edit",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campground.findById(id);
@@ -107,11 +83,11 @@ router.get(
       return res.redirect("/campgrounds");
     }
     // 캠핑장을 찾았다면 해당 캠핑장의 저자와 현재 로그인한 유저가 일치하는지 확인
-    if (!campground.author.equals(req.user._id)) {
-      // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
-      req.flash("error", "You do not have permission to do that");
-      return res.redirect(`/campgrounds/${id}`);
-    }
+    // if (!campground.author.equals(req.user._id)) {
+    //   // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
+    //   req.flash("error", "You do not have permission to do that");
+    //   return res.redirect(`/campgrounds/${id}`);
+    // } // isAuthor middleware 사용
     res.render("campgrounds/edit", { campground });
   })
 );
@@ -119,18 +95,19 @@ router.get(
 router.put(
   "/:id",
   isLoggedIn,
+  isAuthor,
   validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
-    if (!campground.author.equals(req.user._id)) {
-      // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
-      req.flash("error", "You do not have permission to do that");
-      return res.redirect(`/campgrounds/${id}`);
-    }
+    // const campground = await Campground.findById(id);
+    // if (!campground.author.equals(req.user._id)) {
+    //   // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
+    //   req.flash("error", "You do not have permission to do that");
+    //   return res.redirect(`/campgrounds/${id}`);
+    // }
     // findByIdAndUpdate를 두 단계로 나눠서 찾은 후에 업데이트할 수 있는지 확인하기.
     // 즉 코드가 캠핑장을 생성한 author을 찾고 현재 로그인한 사용자와 일치하면 요청 보내기
-    const cam = await Campground.findByIdAndUpdate(id, {
+    const campground = await Campground.findByIdAndUpdate(id, {
       ...req.body.campground,
     });
     req.flash("success", "Successfully Updated Campground");
@@ -142,14 +119,15 @@ router.put(
 router.delete(
   "/:id",
   isLoggedIn,
+  isAuthor,
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
-    if (!campground.author.equals(req.user._id)) {
-      // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
-      req.flash("error", "You do not have permission to do that");
-      return res.redirect(`/campgrounds/${id}`);
-    }
+    // const campground = await Campground.findById(id);
+    // if (!campground.author.equals(req.user._id)) {
+    //   // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
+    //   req.flash("error", "You do not have permission to do that");
+    //   return res.redirect(`/campgrounds/${id}`);
+    // }
     await Campground.findByIdAndDelete(id);
     req.flash("success", "Successfully Deleted Campground");
     res.redirect("/campgrounds");
