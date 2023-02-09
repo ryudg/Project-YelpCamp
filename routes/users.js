@@ -25,6 +25,7 @@ router.post(
   })
 );
 
+// login
 router.get("/login", (req, res) => {
   res.render("users/login");
 });
@@ -42,5 +43,17 @@ router.post(
     res.redirect("/campgrounds");
   }
 );
+
+// logout
+router.get("/logout", (req, res) => {
+  // req.logout() 메서드는 로그아웃을 처리하지만 에러가 발생할 가능성이 있어 콜백 함수를 넣어 에러 처리를 추가함
+  // req.logout()에서 에러가 발생하면, next(err)를 통해 에러 핸들러로 전달.
+  // 즉, req.flash()와 res.redirect() 구문이 실행되지 않고, 에러가 적절히 처리될 수 있게됨
+  req.logout((err) => {
+    if (err) next(err);
+    req.flash("success", "Good Bye!!!");
+    res.redirect("/campgrounds");
+  });
+});
 
 module.exports = router;
