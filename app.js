@@ -54,6 +54,9 @@ passport.serializeUser(User.serializeUser()); // passport에게 사용자를 어
 passport.deserializeUser(User.deserializeUser()); // 즉, 세선에 정보를 어떻게 저장하고 가져오는지를 결정하는 메서드이다.
 
 app.use((req, res, next) => {
+  // 해당 미들웨어를 거친 곳 전역에서 사용 가능한 변수만들기
+  // 즉, currentUser, success... 은 모든 템플릿에서 사용할 수 있다.
+  res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
