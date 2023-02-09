@@ -32,5 +32,10 @@
   - 정적 assets은 공용(public) 디렉토리에 저장되어 있으며, Express 라우터를 통해 클라이언트에게 제공될 수 있다.
 
 - session config
+
   - create flash message
   - add authentication
+
+- Passport
+  1. /models/user.js 유저 스키마 정의
+  2. Passport 사용을 위해 app.js 파일 구성
