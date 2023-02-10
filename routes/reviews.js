@@ -7,7 +7,7 @@ const Campground = require("../models/campground");
 const Review = require("../models/review");
 // const ExpressError = require("../utils/ExpressError");
 // const { reviewSchema } = require("../schema.js");
-const { validateReview, isLoggedIn } = require("../middleware");
+const { validateReview, isLoggedIn, isReviewAuthor } = require("../middleware");
 
 // Creatae Review
 router.post(
@@ -32,6 +32,8 @@ router.post(
 // Delete Review
 router.delete(
   "/:reviewId",
+  isLoggedIn,
+  isReviewAuthor,
   catchAsync(async (req, res) => {
     // $pull - 배열에 있는 모든 인스턴스 중에 특정 조건에 만족하는 값 지우기
     const { id, reviewId } = req.params;

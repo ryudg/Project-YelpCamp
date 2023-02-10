@@ -58,7 +58,7 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id)
-      .populate("reviews")
+      .populate({ path: "reviews", populate: { path: "author" } }) // 캠핑장에 리뷰 배열의 모든 리뷰를 채워 넣기, 단 show 페이지에만 적용. 각각의 리뷰에 작성자를 채워 넣고 또 각각의 작성자를 각각의 캠핑장에 넣음
       .populate("author");
     console.log(campground);
     if (!campground) {
