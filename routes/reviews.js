@@ -7,15 +7,17 @@ const Campground = require("../models/campground");
 const Review = require("../models/review");
 // const ExpressError = require("../utils/ExpressError");
 // const { reviewSchema } = require("../schema.js");
-const { validateReview } = require("../middleware");
+const { validateReview, isLoggedIn } = require("../middleware");
 
 // Creatae Review
 router.post(
   "/",
+  isLoggedIn,
   validateReview,
   catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
+    review.author = req.user._id;
     campground.reviews.push(review); //  Cannot read properties of null (reading 'reviews') 라우터로 파일 옮긴 후 발생하는 error
     // app.js app.use 라우트 지정에 id를 포함했는데 접두사로 사용하는 경로에 id가 있다.
     // 하지만 리뷰 라우트의 id에 디폴트로 접근하지 않음, 즉 라우터가 분리된 매개변수를 갖고있음
