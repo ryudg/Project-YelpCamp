@@ -15,7 +15,7 @@
   - html5 required 속성을 추가하기 (브라우저에 의존하기 때문에 표준화 되어있지 않음)
   - 부스트트랩으 유효성 검사 (https://getbootstrap.kr/docs/5.2/forms/validation/) <br><br>
 
-- // Joi를 이용한 스키마 유효성 검사 (사용자가 입력한 데이터가 유효한지 검사하는 유효성 검사 라이브러리)
+- ~~Joi를 이용한 스키마 유효성 검사 (사용자가 입력한 데이터가 유효한지 검사하는 유효성 검사 라이브러리)~~
 
 - `const router = express.Router();` 라우터로 라우트별 정리
   - `const router = express.Router({ mergeParams: true });`의 의미는, 라우터에서 URL 파라미터(parameters)를 상위 라우터에서 전달 받을 수 있도록 하는 것을 의미. 
