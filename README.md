@@ -58,4 +58,42 @@
 - router.route("경로")를 이용해서 리팩터링
 
 - [Starability](https://github.com/LunarLogic/starability)를 이용한 별점 표시
+
   - starability-coinFlip
+
+- [Multer](https://github.com/expressjs/multer)를 이용한 이미지 삽입
+
+  ```bash
+  > npm i multer
+  ```
+
+  ```javascript
+  const multer = require("multer");
+  ```
+
+  - Express에 적용하고 `multipart/form-data`를 파싱하고 다룬다. 주로 파일을 업로드할 때 사용함.
+  - `.post(upload.single("image"), (req, res) => console.log(req.body, req.file));` multer middleware를 사용한 결과
+
+    - <img width="360" alt="스크린샷 2023-02-11 오전 11 23 40" src="https://user-images.githubusercontent.com/103430498/218234235-4a3764ce-2719-43a6-95be-ee4505fcd3b1.png">
+
+  - HTML 폼은 서버에 파일을 보낼수 없다.(파일을 보내려면 폼을 바꿔야함)
+
+    - 인코딩 타입 속성과 관련(`app.use(express.urlencoded({ extended: true }));` : url 인코딩)
+    - 파일을 업로드 하기 위해서는 인코딩 타입을 설정해야함(`enctype` 속성을 `multipart/form-data`로 지정)
+      - HTML 폼의 전송 방식을 지정하는 속성, 이 속성은 폼 데이터를 어떻게 인코딩할지를 지정
+      - `multipart/form-data`
+        - 폼의 데이터가 다중 파트 형식으로 인코딩된다는 것을 뜻함.
+        - 이 형식은 텍스트 데이터와 파일 데이터를 포함할 수 있어서, 폼에서 텍스트 입력과 파일 업로드 등을 동시에 할 수 있다.
+      - 이 속성을 사용하지 않으면, 기본적으로 `application/x-www-form-urlencoded` 형식으로 인코딩.
+        - 이 형식은 폼 데이터를 URL 인코딩 형식으로 전송하는데, 파일 업로드를 포함할 수 없습니다.
+
+  - 사진을 저장해야 하는데 MongoDB에는 저장할 수 없다.
+    (BSON 문서 용량은 16mb 제한이지만 GridFS를 이용해서 용량이 큰 파일을 저장할 수 있다.)
+  - [Cloudinary](https://cloudinary.com/)를 사용
+    - 클라우드 기반의 이미지 및 비디오 관리 서비스
+    - 작업 과정
+      1. 파일을 보낼 수 있게 폼을 만듬
+      2. 서버에 들어가서 폼 제출, 라우트인 엔드포인트에 넣음
+      3. 파일을가져옴, 파일에 정보가 있음(폼에서 가져온 정보 즉, 데이터)
+      4. 데이터를 Cloudinary에 저장함(Cloudinary에 보냄), Cloudinary에서 Url을 받을 수 있게됨
+      5. Url을 가져와서 MongoDB에 저장, DB에는 여러 Url이 있고 각각의 Url들은 Cloudinary에 저장한 사진과 일치
