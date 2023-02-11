@@ -52,7 +52,10 @@
 - MVC(Model-View-Controller) - 웹 애플리케이션을 개발할 때 사용되는 아키텍처 패턴
 
   - Model : 데이터들의 집합, 모델 안에 데이터가 있다.
-  - View : 사용자에게 보이는 레이아웃
+  - View : 사용자에게 보이는 레이아 웃
   - Controller : 앱의 핵심을 구성하는 역할, 로직이 컨트롤러로 들어오면 뷰를 렌더링하고 모델에서 작업함.
 
 - router.route("경로")를 이용해서 리팩터링
+
+- [Starability](https://github.com/LunarLogic/starability)를 이용한 별점 표시
+  - starability-coinFlip
