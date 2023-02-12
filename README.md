@@ -97,3 +97,8 @@
       3. 파일을가져옴, 파일에 정보가 있음(폼에서 가져온 정보 즉, 데이터)
       4. 데이터를 Cloudinary에 저장함(Cloudinary에 보냄), Cloudinary에서 Url을 받을 수 있게됨
       5. Url을 가져와서 MongoDB에 저장, DB에는 여러 Url이 있고 각각의 Url들은 Cloudinary에 저장한 사진과 일치
+    - 회원가입 후 [dot.env](https://www.npmjs.com/package/dotenv) install
+      - api 크리덴셜(자격증명)이나 비밀 키를 비밀 파일에 저장(즉, github에 코드를 제출할 때 파일 포함하지 않기 `.env`)
+      ```bash
+      > npm i dotenv
+      ```

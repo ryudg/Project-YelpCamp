@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV !== "production") {
+  // 환경변수, 개발 혹은 프로덕션 환경
+  require("dotenv").config();
+}
+
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
