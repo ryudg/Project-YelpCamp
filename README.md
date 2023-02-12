@@ -102,3 +102,7 @@
       ```bash
       > npm i dotenv
       ```
+  - `Multer`-`Cloudinary` 연동
+    - ```bash
+      > npm i cloudinary multer-storage-cloudinary
+      ```
