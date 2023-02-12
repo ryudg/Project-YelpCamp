@@ -11,7 +11,7 @@ const { isLoggedIn, validateCampground, isAuthor } = require("../middleware");
 const multer = require("multer");
 const { storage } = require("../cloudinary");
 // const upload = multer({ dest: "uploads/" }); local file 저장
-const upload = multer({ storage });
+const upload = multer({ storage }); // cloudinary에 저장
 
 router
   .route("/")
