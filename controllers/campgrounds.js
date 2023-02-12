@@ -15,10 +15,14 @@ module.exports.createCampground = async (req, res, next) => {
   // 어디에든 오류를 발생시킬 수 있는 기초설정
   // if (!req.body.campground)
   //   throw new ExpressError("Invalid Campground Data", 400);
-
   const campground = new Campground(req.body.campground);
+  campground.images = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
   campground.author = req.user._id;
   await campground.save();
+  console.log(campground);
   req.flash("success", "Successfully Made a New Campground");
   res.redirect(`/campgrounds/${campground._id}`);
 };

@@ -16,13 +16,17 @@ const upload = multer({ storage }); // cloudinary에 저장
 router
   .route("/")
   .get(catchAsync(campgrounds.index)) // campgrounds
-  // .post(
-  //   // CREATE 라우트가 :id 라우트보다 밑에 있으면 new경로를 id처리하기 떄문에 위에 있어야함
-  //   isLoggedIn,
-  //   validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가 // mongoose에서 이곳으로 발생된 오류가 있다면 캐스트 오류를 통해 확인하고
-  //   catchAsync(campgrounds.createCampground) // 더이상 try...catch를 할 필요가 없이 catchAsync함수를 사용 , 오류가 발생하면 catchAsync가 검출하고 next로 전달한다.
-  // );
-  .post(upload.array("image"), (req, res) => console.log(req.body, req.files)); // "image"는 찾아야하는 필드,폼데이터 / 해당 미들웨어(upload.single())는 req에 file속성을 추가하고 body 나머지에도 추가
+  .post(
+    // CREATE 라우트가 :id 라우트보다 밑에 있으면 new경로를 id처리하기 떄문에 위에 있어야함
+    isLoggedIn,
+    upload.array("image"), // "image"는 찾아야하는 필드
+    validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가 // mongoose에서 이곳으로 발생된 오류가 있다면 캐스트 오류를 통해 확인하고
+    catchAsync(campgrounds.createCampground) // 더이상 try...catch를 할 필요가 없이 catchAsync함수를 사용 , 오류가 발생하면 catchAsync가 검출하고 next로 전달한다.
+  );
+// .post(upload.array("image"), (req, res) => {
+//   console.log(req.body, req.files);
+//   res.send("Done!!!");
+// }); // "image"는 찾아야하는 필드,폼데이터 / 해당 미들웨어(upload.single())는 req에 file속성을 추가하고 body 나머지에도 추가
 
 // CREATE - /:id 앞에 와야함
 router.get("/new", isLoggedIn, campgrounds.renderNewForm);
