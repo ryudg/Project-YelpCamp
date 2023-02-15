@@ -2,14 +2,20 @@ const mongoose = require("mongoose");
 const Review = require("./review");
 const Schema = mongoose.Schema;
 
+
+// https://res.cloudinary.com/dcibff1dd/image/upload/w_100/v1676296685/YelpCamp/oiy3ionn8pj8mz6ey7g0.jpg
+
+const ImageSchema = new Schema({
+    url: String,
+    filename: String,
+})
+// 썸네일 이미지를 만들기 위한 주소 생성
+ImageSchema.virtual("thumbnail").get(function(){
+  return this.url.replace("/upload","/upload/w_200")
+})
 const CampgroundSchema = new Schema({
   title: String,
-  images: [
-    {
-      url: String,
-      filename: String,
-    },
-  ],
+  images: [ImageSchema],
   price: Number,
   description: String,
   location: String,
