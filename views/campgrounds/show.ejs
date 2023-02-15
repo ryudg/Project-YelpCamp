@@ -1,10 +1,6 @@
 <% layout("layouts/boilerplate") %>
+
 <link rel="stylesheet" href="/stylesheets/css/starability/coinFlip.css" />
-
-<script>
-  const mapToken = '<%- process.env.MAPBOX_TOKEN %>'
-</script>
-
 <div class="row">
   <div class="col-6">
     <div id='map' style='width: 400px; height: 300px;'></div>
@@ -180,5 +176,13 @@
     <% } %>
   </div>
 </div>
+
+<script>
+  const mapToken = '<%- process.env.MAPBOX_TOKEN %>'
+  const campground = <%- JSON.stringify(campground) %>
+
+  // let campgroundLng = parseFloat('<%- campground.geometry.coordinates[0] %>');
+  // let campgroundLat = parseFloat('<%- campground.geometry.coordinates[1] %>');
+</script>
 
 <script src="/javascripts/showPageMap.js"></script>
