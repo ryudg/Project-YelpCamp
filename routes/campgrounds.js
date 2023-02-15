@@ -49,6 +49,7 @@ router
     // UPDATE PUT
     isLoggedIn,
     isAuthor,
+    upload.array("image"),
     validateCampground, // 라우터 핸들러에 Joi 미들웨어 추가
     catchAsync(campgrounds.updateCampground)
   )
