@@ -110,4 +110,6 @@
 > npm i @mapbox/mapbox-sdk      
 
   - [Mapbox geocoding](https://github.com/mapbox/mapbox-sdk-js/blob/main/docs/services.md#examples-41)
-  
+  - marker 기능
+  - clusters
+    - 지도 정보가 많으면 분할
