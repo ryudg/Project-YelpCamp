@@ -8,6 +8,7 @@ module.exports.campgroundSchema = Joi.object({
     location: Joi.string().required(),
     description: Joi.string().required(),
   }).required(),
+  deleteImages:Joi.array()
 }); // 스키마 정의 후 스키마에 데이터 전달하기
 
 module.exports.reviewSchema = Joi.object({

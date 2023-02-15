@@ -1,4 +1,5 @@
 const Campground = require("../models/campground");
+const {cloudinary} = require("../cloudinary")
 
 module.exports.index = async (req, res) => {
   const campgrounds = await Campground.find({});
@@ -57,6 +58,7 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateCampground = async (req, res) => {
   const { id } = req.params;
+  console.log(req.body)
   // const campground = await Campground.findById(id);
   // if (!campground.author.equals(req.user._id)) {
   //   // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력
@@ -73,6 +75,12 @@ module.exports.updateCampground = async (req, res) => {
     filename: f.filename,
   }))
   campground.images.push(...imgs);
+  if(req.body.deleteImages) {
+    for(let filename of req.body.deleteImages){
+      await cloudinary.uploader.destroy(filename)
+    }
+    await campground.updateOne({$pull:{images:{filename:{$in:req.body.deleteImages}}}})
+  }
   await campground.save()
   req.flash("success", "Successfully Updated Campground");
   res.redirect(`/campgrounds/${campground._id}`);
