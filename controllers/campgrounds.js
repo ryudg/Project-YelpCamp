@@ -1,4 +1,7 @@
 const Campground = require("../models/campground");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapBoxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken:mapBoxToken });
 const {cloudinary} = require("../cloudinary")
 
 module.exports.index = async (req, res) => {
@@ -16,16 +19,20 @@ module.exports.createCampground = async (req, res, next) => {
   // 어디에든 오류를 발생시킬 수 있는 기초설정
   // if (!req.body.campground)
   //   throw new ExpressError("Invalid Campground Data", 400);
-  const campground = new Campground(req.body.campground);
-  campground.images = req.files.map((f) => ({
-    url: f.path,
-    filename: f.filename,
-  }));
-  campground.author = req.user._id;
-  await campground.save();
-  console.log(campground);
-  req.flash("success", "Successfully Made a New Campground");
-  res.redirect(`/campgrounds/${campground._id}`);
+  const geoData = await geocoder.forwardGeocode({
+    query: req.body.campground.location,
+    limit:1,
+  }).send()
+  res.send(geoData.body.features[0].geometry.coordinates);
+  // const campground = new Campground(req.body.campground);
+  // campground.images = req.files.map((f) => ({
+  //   url: f.path,
+  //   filename: f.filename,
+  // }));
+  // campground.author = req.user._id;
+  // await campground.save();
+  // req.flash("success", "Successfully Made a New Campground");
+  // res.redirect(`/campgrounds/${campground._id}`);
 };
 
 module.exports.showCampground = async (req, res) => {
@@ -58,7 +65,6 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateCampground = async (req, res) => {
   const { id } = req.params;
-  console.log(req.body)
   // const campground = await Campground.findById(id);
   // if (!campground.author.equals(req.user._id)) {
   //   // 해당 캠핑장을 생성하지 않은 사용자가 요청을 보낸경우 flas message 출력

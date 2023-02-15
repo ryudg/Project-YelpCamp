@@ -106,3 +106,8 @@
     - ```bash
       > npm i cloudinary multer-storage-cloudinary
       ```
+- Mapbox
+> npm i @mapbox/mapbox-sdk      
+
+  - [Mapbox geocoding](https://github.com/mapbox/mapbox-sdk-js/blob/main/docs/services.md#examples-41)
+  
