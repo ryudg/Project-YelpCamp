@@ -42,11 +42,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 const sessionConfig = {
+  name: "session", // 세션의 기본값 이름 변경
   secret: "secretkey",
   resave: false,
   saveUninitialized: true,
   cookie: {
-    httpOnly: true,
+    httpOnly: true, // 세션을 통해 설정된 쿠키는 http를 통해서만 엑세스할 수 있다.
+    secure: true, // HTTP 프로토콜이 아닌 HTTPS 프로토콜을 통해서만 쿠키에 접근할 수 있도록 설정
+    // 브라우저가 HTTPS 프로토콜을 사용하여 서버에 요청할 때만 쿠키가 전송되도록 하여, 보안을 강화할 수 있다.
+    // 즉, secure: true는 중요한 정보가 포함된 쿠키를 안전하게 보호하기 위해 HTTPS 프로토콜을 사용해야 할 경우, 쿠키의 보안을 강화하기 위해 설정하는 옵션
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7일 후
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
