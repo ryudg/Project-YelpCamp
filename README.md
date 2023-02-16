@@ -193,4 +193,5 @@ https://mighty-anchorage-14187.herokuapp.com/ | https://git.heroku.com/mighty-an
 > git remote -v
 > git add .
 > git commit -m "ready to try deploying"
+> git push heroku master ## 디폴트 브랜치인 마스터에서 코드를 올림
 ```
