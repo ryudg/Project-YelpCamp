@@ -106,10 +106,19 @@
     - ```bash
       > npm i cloudinary multer-storage-cloudinary
       ```
+
 - Mapbox
-> npm i @mapbox/mapbox-sdk      
+
+  > npm i @mapbox/mapbox-sdk
 
   - [Mapbox geocoding](https://github.com/mapbox/mapbox-sdk-js/blob/main/docs/services.md#examples-41)
   - marker 기능
   - clusters
     - 지도 정보가 많으면 분할
+
+- express-mongo-sanitize : 입력값을 검증하여 NoSQL Injection 공격을 방지하기 위한 기능
+  - NoSQL Injection은 사용자 입력값을 이용하여 데이터베이스에 악의적인 쿼리를 삽입하는 공격 기법
+    - 이러한 공격으로부터 데이터베이스를 보호하기 위해서는 입력값 검증이 필요
+  - express-mongo-sanitize는 사용자 입력값에 대해서 MongoDB 쿼리 문자열을 필터링하여 쿼리 문자열에서 불필요한 문자열을 제거
+    - 이를 통해 사용자 입력값으로부터 MongoDB 쿼리 인젝션을 방지
+  - 즉, express-mongo-sanitize는 Express 애플리케이션에서 사용자 입력값을 처리할 때 보안상의 위협을 줄이기 위한 미들웨어
