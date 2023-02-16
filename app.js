@@ -29,7 +29,7 @@ const campgroundsRoutes = require("./routes/campgrounds");
 const reviewsRoutes = require("./routes/reviews");
 
 // const dbUrl = process.env.DB_URL;
-const dbUrl = "mongodb://localhost:27017/yelp-camp";
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 mongoose.set("strictQuery", true);
 mongoose.connect(dbUrl);
 
@@ -46,8 +46,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
+const secret = process.env.SECRET || "secretkey";
+
 const store = MongoStore.create({
   mongoUrl: dbUrl,
+  secret,
   touchAfter: 24 * 60 * 60, // 데이터와 세션이 변경되지 않았을 때의 불필요한 재저장이나 업데이트를 지정한 시간마다 진행
 });
 
@@ -58,7 +61,7 @@ store.on("error", function (e) {
 const sessionConfig = {
   store,
   // name: "session", // 세션의 기본값 이름 변경
-  secret: "secretkey",
+  secret,
   resave: false,
   saveUninitialized: true,
   // cookie: {

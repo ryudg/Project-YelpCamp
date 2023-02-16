@@ -168,3 +168,29 @@ const multer = require("multer");
 - connect-mongo는 Express.js의 기본 세션 미들웨어와 함께 사용할 수 있다.
 - 기본적으로 세션 데이터는 MongoDB의 sessions 컬렉션에 저장된다. 이를 통해 서버의 메모리 사용량을 줄이고, 클러스터링 및 부하 분산과 같은 확장성 문제를 해결할 수 있다.
 - 또한 connect-mongo는 세션 만료 및 삭제를 자동으로 처리하기 때문에 개발자가 수동으로 관리할 필요가 없다. 이를 통해 세션 관리에 대한 부담을 덜어주고, 보안성을 향상시킬 수 있다.
+
+## 21. heroku 배포
+
+1. Install the Heroku CLI
+2. heroku login
+
+```bash
+❯ heroku login
+```
+
+3. heroku create (터미널 경로가 최상위 파일에 있는지 확인)
+
+```bash
+> heroku create
+Creating app... done, ⬢ mighty-anchorage-14187
+https://mighty-anchorage-14187.herokuapp.com/ | https://git.heroku.com/mighty-anchorage-14187.git
+```
+
+4. 경로 수정 app.js `dbUrl`
+5. 배포
+
+```bash
+> git remote -v
+> git add .
+> git commit -m "ready to try deploying"
+```
