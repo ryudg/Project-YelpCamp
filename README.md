@@ -187,11 +187,43 @@ https://mighty-anchorage-14187.herokuapp.com/ | https://git.heroku.com/mighty-an
 ```
 
 4. 경로 수정 app.js `dbUrl`
+
+```javascsript
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
+```
+
 5. 배포
 
 ```bash
 > git remote -v
 > git add .
 > git commit -m "ready to try deploying"
-> git push heroku master ## 디폴트 브랜치인 마스터에서 코드를 올림
+## > git push heroku master ## error
+> git push heroku HEAD:master ## 디폴트 브랜치인 마스터에서 코드를 올림
+```
+
+6. error 확인
+
+```bash
+> heroku logs --tail
+```
+
+- define heroku app start
+
+```json
+// package.json
+"scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "start": "node app.js"
+},
+```
+
+- heroku port `const port = process.env.PORT || 3000;`
+
+7. 재배포
+
+```bash
+> git add .
+> git commit -m "add start script"
+> git push heroku HEAD:master
 ```
