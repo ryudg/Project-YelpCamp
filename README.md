@@ -208,7 +208,7 @@ const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 > heroku logs --tail
 ```
 
-- define heroku app start
+- `Starting process with command npm start`, define heroku app start
 
 ```json
 // package.json
@@ -220,10 +220,19 @@ const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 
 - heroku port `const port = process.env.PORT || 3000;`
 
-7. 재배포
+- `Error: Cannot create a client without an access token`, 환경변수 설정
 
 ```bash
-> git add .
-> git commit -m "add start script"
-> git push heroku HEAD:master
+> heroku config:set SECRET=keyvalue
+```
+
+- `MongoNetworkError: connection <monitor> to 52.72.138.16:27017 closed`
+  - MongoDB Atlas cluster server에 연결할 수 없음.
+  - 화이트 리스트에 포함되지 않은 IP의 데이터베이스에 접근 불가
+  - Atlas Network Access > ADD IP ADDRESS > ALLOW ACESS FROM ANYWHERE
+
+7. heroku restart
+
+```bash
+> heroku restart
 ```
