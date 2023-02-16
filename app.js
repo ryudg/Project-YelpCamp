@@ -21,16 +21,17 @@ const LocalStarategy = require("passport-local");
 const User = require("./models/user");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
+const MongoStore = require("connect-mongo");
 
 // 라우터 불러오기
 const userRoutes = require("./routes/users");
 const campgroundsRoutes = require("./routes/campgrounds");
 const reviewsRoutes = require("./routes/reviews");
 
-const dbUrl = process.env.DB_URL;
-// "mongodb://localhost:27017/yelp-camp"
+// const dbUrl = process.env.DB_URL;
+const dbUrl = "mongodb://localhost:27017/yelp-camp";
 mongoose.set("strictQuery", true);
-mongoose.connect("mongodb://localhost:27017/yelp-camp");
+mongoose.connect(dbUrl);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -44,19 +45,30 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60, // 데이터와 세션이 변경되지 않았을 때의 불필요한 재저장이나 업데이트를 지정한 시간마다 진행
+});
+
+store.on("error", function (e) {
+  console.log("SESSION STORE ERROR", e);
+});
+
 const sessionConfig = {
-  name: "session", // 세션의 기본값 이름 변경
+  store,
+  // name: "session", // 세션의 기본값 이름 변경
   secret: "secretkey",
   resave: false,
   saveUninitialized: true,
-  cookie: {
-    httpOnly: true, // 세션을 통해 설정된 쿠키는 http를 통해서만 엑세스할 수 있다.
-    secure: true, // HTTP 프로토콜이 아닌 HTTPS 프로토콜을 통해서만 쿠키에 접근할 수 있도록 설정
-    // 브라우저가 HTTPS 프로토콜을 사용하여 서버에 요청할 때만 쿠키가 전송되도록 하여, 보안을 강화할 수 있다.
-    // 즉, secure: true는 중요한 정보가 포함된 쿠키를 안전하게 보호하기 위해 HTTPS 프로토콜을 사용해야 할 경우, 쿠키의 보안을 강화하기 위해 설정하는 옵션
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7일 후
-    maxAge: 1000 * 60 * 60 * 24 * 7,
-  },
+  // cookie: {
+  //   httpOnly: true, // 세션을 통해 설정된 쿠키는 http를 통해서만 엑세스할 수 있다.
+  //   secure: true, // HTTP 프로토콜이 아닌 HTTPS 프로토콜을 통해서만 쿠키에 접근할 수 있도록 설정
+  //   // 브라우저가 HTTPS 프로토콜을 사용하여 서버에 요청할 때만 쿠키가 전송되도록 하여, 보안을 강화할 수 있다.
+  //   // 즉, secure: true는 중요한 정보가 포함된 쿠키를 안전하게 보호하기 위해 HTTPS 프로토콜을 사용해야 할 경우, 쿠키의 보안을 강화하기 위해 설정하는 옵션
+  //   expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7일 후
+  //   maxAge: 1000 * 60 * 60 * 24 * 7,
+  // },
 };
 app.use(session(sessionConfig));
 app.use(flash()); // req.flash에 키-값 쌍을 전달해 플래시 생성
