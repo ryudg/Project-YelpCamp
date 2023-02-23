@@ -245,5 +245,6 @@ const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 > heroku restart
 ```
 </details>
+ 
 ## 21. Cloudtype 배포
 link : https://port-0-yelpcamp-4uvg2mleggcds3.sel3.cloudtype.app/campgrounds
