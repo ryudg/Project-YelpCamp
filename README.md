@@ -4,7 +4,7 @@
 <img width="2056" alt="스크린샷 2023-02-17 오전 1 35 25" src="https://user-images.githubusercontent.com/103430498/219429986-98515a2f-edaa-4199-81a5-7251dcb48f04.png">
 
 
-# Link : https://mighty-anchorage-14187.herokuapp.com/
+# Link : ~~https://mighty-anchorage-14187.herokuapp.com/~~
 
 ## 1. MongoDB를 이용한 데이터 관리
 
