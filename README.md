@@ -177,7 +177,8 @@ const multer = require("multer");
 - 또한 connect-mongo는 세션 만료 및 삭제를 자동으로 처리하기 때문에 개발자가 수동으로 관리할 필요가 없다. 이를 통해 세션 관리에 대한 부담을 덜어주고, 보안성을 향상시킬 수 있다.
 
 ## ~~21. heroku 배포~~
-
+<details>
+    <summary>heroku 배포</summary>
 1. Install the Heroku CLI
 2. heroku login
 
@@ -243,5 +244,6 @@ const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 ```bash
 > heroku restart
 ```
+</details>
 ## 21. Cloudtype 배포
 link : https://port-0-yelpcamp-4uvg2mleggcds3.sel3.cloudtype.app/campgrounds
