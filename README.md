@@ -4,7 +4,8 @@
 <img width="2056" alt="스크린샷 2023-02-17 오전 1 35 25" src="https://user-images.githubusercontent.com/103430498/219429986-98515a2f-edaa-4199-81a5-7251dcb48f04.png">
 
 
-# Link : ~~https://mighty-anchorage-14187.herokuapp.com/~~
+ ~~# Link :https://mighty-anchorage-14187.herokuapp.com/~~
+# Link : https://port-0-yelpcamp-4uvg2mleggcds3.sel3.cloudtype.app/campgrounds
 
 ## 1. MongoDB를 이용한 데이터 관리
 
@@ -175,7 +176,7 @@ const multer = require("multer");
 - 기본적으로 세션 데이터는 MongoDB의 sessions 컬렉션에 저장된다. 이를 통해 서버의 메모리 사용량을 줄이고, 클러스터링 및 부하 분산과 같은 확장성 문제를 해결할 수 있다.
 - 또한 connect-mongo는 세션 만료 및 삭제를 자동으로 처리하기 때문에 개발자가 수동으로 관리할 필요가 없다. 이를 통해 세션 관리에 대한 부담을 덜어주고, 보안성을 향상시킬 수 있다.
 
-## 21. heroku 배포
+## ~~21. heroku 배포~~
 
 1. Install the Heroku CLI
 2. heroku login
@@ -242,3 +243,5 @@ const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
 ```bash
 > heroku restart
 ```
+## 21. Cloudtype 배포
+link : https://port-0-yelpcamp-4uvg2mleggcds3.sel3.cloudtype.app/campgrounds
